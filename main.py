@@ -1,9 +1,24 @@
 from email import message
 from flask import Flask, request
 from flask_restful import Api, Resource, reqparse, abort
+from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
 api = Api(app)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
+db = SQLAlchemy(app)
+
+class VideoModel(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False)
+    views = db.Column(db.Integer, nullable=False)
+    likes = db.Column(db.Integer, nullable=False)
+
+    def __repr__(self):
+        return f"Video(name = {self.name}, views = {self.views}, likes = {self.likes})"
+
+# Uncomment to recreate the database
+# db.create_all()
 
 names = {'matthew': {'age': 27, 'gender': 'male'}, 'bill': {'age': 60, 'gender': 'male'}}
 video_put_args = reqparse.RequestParser()
